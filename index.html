@@ -7,27 +7,6 @@
     <title>Casino</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-    <style>
-      body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      #unity-container {
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-      }
-      #unity-canvas {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
   </head>
   <body class="dark">
     <div id="unity-container" class="unity-desktop">
@@ -44,18 +23,6 @@
     </div>
     <div id="unity-fullscreen-button" style="display: none;"></div>
     <script>
-      function launchFullScreen(element) {
-        if (element.requestFullscreen) {
-          element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) { // Firefox
-          element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
-          element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { // IE/Edge
-          element.msRequestFullscreen();
-        }
-      }
-
       const hideFullScreenButton = "true";
       const buildUrl = "Build";
       const loaderUrl = buildUrl + "/CasinoBuild.loader.js";
@@ -94,7 +61,7 @@
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = "unity-mobile";
-        config.devicePixelRatio = 1;
+        config.devicePixelRatio = Math.min(config.devicePixelRatio, 2);
       }
       loadingCover.style.display = "";
 
@@ -107,13 +74,11 @@
           progressBarFull.style.width = `${100 * progress}%`;
         }).then((unityInstance) => {
           loadingCover.style.display = "none";
-          launchFullScreen(container); // Automatically launch fullscreen
           if (canFullscreen) {
             if (!hideFullScreenButton) {
               fullscreenButton.style.display = "";
             }
             fullscreenButton.onclick = () => {
-              launchFullScreen(container);
               unityInstance.SetFullscreen(1);
             };
           }
@@ -123,7 +88,6 @@
       };
       document.body.appendChild(script);
 
-      // Force landscape orientation
       window.addEventListener("resize", function() {
         if (window.innerHeight > window.innerWidth) {
           alert("Please rotate your device to landscape mode.");
